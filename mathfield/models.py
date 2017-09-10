@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import six
 from django.db import models
 from django.core import exceptions
 from mathfield.api import store_math
 import json
+
+if six.PY3:
+    basestring = str
 
 
 MathFieldValidationError = lambda self, value: exceptions.ValidationError(
@@ -16,7 +20,12 @@ class MathField(models.TextField):
 
     description = 'Field that allows you to write LaTeX and display it as HTML.'
 
-    __metaclass__ = models.SubfieldBase
+    if six.PY2:
+        __metaclass__ = models.SubfieldBase
+
+    def from_db_value(self, value, expression, connection, context):
+        """'to_python like' behaviour for Django > 1.8."""
+        return self.to_python(value)
 
     def to_python(self, value):
         """ The data is serialized as JSON with the keys `raw` and `html` where

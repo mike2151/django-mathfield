@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import six
 import subprocess
 import os
 import re
 import cgi
-from django.utils.encoding import smart_unicode
+
+if six.PY3:
+    from django.utils.encoding import smart_text as smart_unicode
+    import html as cgi
+else:
+    from django.utils.encoding import smart_unicode
 
 # These are functions for developers to use externally
 
@@ -86,6 +92,9 @@ def render_to_html(raw):
     if node_error:
         raise NodeError(node_error)
 
+    if six.PY3:
+        node_output = node_output.decode('UTF-8')
+        
     html_bits = node_output.strip('\n').split('\n')
 
     final = []

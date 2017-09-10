@@ -51,9 +51,9 @@
                 html = html.replace('\\$ ', '$');
             }
             catch(err){
-                // KaTeX failed, most likely because the user entired bad LaTeX.
+                // KaTeX failed, most likely because the user entered bad LaTeX.
                 // Display the user's raw text in red instead.
-                html = '<span style="color: red;">' + rawMath + '</span>'
+                html = '<span style="color: blue;">' + rawMath + '</span>'
             }
             returnlist.push(html);
 
@@ -63,6 +63,10 @@
         returnlist.push(Encoder.htmlEncode(
             rawstring.slice(loc, rawstring.length)
         ));
+
+        // Convert encoded spaces to html line breaks
+        returnlist = returnlist.map((elem) => elem.split('&#10;').join('<br />'))
+
         return returnlist.join('');
     }
 
@@ -140,6 +144,10 @@
         preview.html(html);
 
         resizePreview(textareaID);
+
+        // Update the Preview, Instead of trying to pass the html from Python.
+        updatePreview(textareaID);
+
     };
 
     /* The form in the django admin wants valid JSON containing the raw LaTeX
