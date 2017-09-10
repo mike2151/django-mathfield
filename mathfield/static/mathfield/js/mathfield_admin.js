@@ -53,7 +53,7 @@
             catch(err){
                 // KaTeX failed, most likely because the user entered bad LaTeX.
                 // Display the user's raw text in red instead.
-                html = '<span style="color: blue;">' + rawMath + '</span>'
+                html = '<span style="color: red;">' + rawMath + '</span>'
             }
             returnlist.push(html);
 
