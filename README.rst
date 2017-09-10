@@ -12,6 +12,8 @@ Your server needs to have
 `Python 2.7 <https://www.python.org/downloads/release/python-278/>`_ and 
 `Django 1.7 <https://www.djangoproject.com/download/>`_.
 
+**EDIT: This fork works with Python3 and Django > 1.8**
+
 Get it installed with::
 
     $ pip install django-mathfield
