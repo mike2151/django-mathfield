@@ -20,9 +20,6 @@ class MathField(models.TextField):
 
     description = 'Field that allows you to write LaTeX and display it as HTML.'
 
-    if six.PY2:
-        __metaclass__ = models.SubfieldBase
-
     def from_db_value(self, value, expression, connection, context):
         """'to_python like' behaviour for Django > 1.8."""
         return self.to_python(value)
