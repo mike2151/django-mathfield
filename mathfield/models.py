@@ -11,7 +11,7 @@ if six.PY3:
     basestring = str
 
 
-MathFieldValidationError = lambda self, value: exceptions.ValidationError(
+def MathFieldValidationError(self, value): return exceptions.ValidationError(
     'Could not resolve "{0}" to a dictionary with only keys "raw" and "html"'
     .format(str(value)))
 
@@ -19,6 +19,9 @@ MathFieldValidationError = lambda self, value: exceptions.ValidationError(
 class MathField(models.TextField):
 
     description = 'Field that allows you to write LaTeX and display it as HTML.'
+
+    if six.PY2:
+        __metaclass__ = models.SubfieldBase
 
     def from_db_value(self, value, expression, connection, context):
         """'to_python like' behaviour for Django > 1.8."""
@@ -48,13 +51,15 @@ class MathField(models.TextField):
                 # the value was stored as just a string. Try to compile it to
                 # LaTeX and return a dictionary, or raise a NodeError
                 return store_math(value)
-        
+
         if isinstance(value, dict):
             return value
-        
+
         return {'raw': '', 'html': ''}
-        
+
     def get_prep_value(self, value):
+        
+        return json.dumps({'raw': value, 'html': value})
         if not value:
             return json.dumps({'raw': '', 'html': ''})
 
@@ -70,7 +75,7 @@ class MathField(models.TextField):
             else:
                 if {'raw', 'html'} == set(dictval.keys()):
                     return value
-                else:                
+                else:
                     raise MathFieldValidationError(self, value)
 
         if isinstance(value, dict):
@@ -83,8 +88,8 @@ class MathField(models.TextField):
 
     def formfield(self, **kwargs):
         defaults = {
-            'help_text': ('Type text as you would normally, or write LaTeX ' 
-                'by surrounding it with $ characters.')
+            'help_text': ('Type text as you would normally, or write LaTeX '
+                          'by surrounding it with $ characters.')
         }
         defaults.update(kwargs)
         field = super(MathField, self).formfield(**defaults)
