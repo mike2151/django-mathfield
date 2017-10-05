@@ -68,6 +68,8 @@ def render_to_html(raw):
 
     if results == []:
         return raw
+    
+    return raw
 
     math_start_positions, math_end_positions, raw_math = zip(*results)
 
@@ -104,11 +106,12 @@ def render_to_html(raw):
         # dollar sign specifiers
         # KaTeX will handle HTML encoding for the math text, but regular text
         # must have HTML stripped out for security reasons.
-        final.append(cgi.escape(raw[loc:math_start_positions[index]]
-                        .strip('$').replace('\\$', '$')))
+        # import pdb ; pdb.set_trace()
+        final.append(cgi.escape(raw[loc:math_start_positions[index]].strip('$').replace('\\$', '$')))
         final.append(smart_unicode(code))
         loc = math_end_positions[index] + 1
 
+    
     final.append(cgi.escape(raw[loc:].replace('\\$', '$')))
     return u''.join(final)
 
