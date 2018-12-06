@@ -1,3 +1,5 @@
+from mathfield.widgets import *
+
 __title__ = 'django-mathfield'
 __version__ = '0.1.0'
 __author__ = 'Jonathan Goodnow'
